@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     # Add runtime deps with `uv add <pkg>`
+    "questionary>=2.1.1",
 ]
 
 [project.scripts]

@@ -2,13 +2,15 @@
 # Everything routes through `uv` so contributors don't need a manually
 # managed virtualenv.
 
-.PHONY: install run test lint format check
+.PHONY: install run start test lint format check
 
 install:
 	uv sync
 
 run:
 	uv run python -m minerva_email_parser
+
+start: run
 
 test:
 	uv run pytest
