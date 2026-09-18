@@ -209,6 +209,9 @@ tempCodeRunnerFile.py
 # Use-case output written by the CLI
 /output/
 
+# Local stand-in for the attachment file-storage bucket
+/storage/
+
 # PyPI configuration file
 .pypirc
 

@@ -13,8 +13,9 @@ def _base_parser():  # noqa: ANN202
     return use_case
 
 
-def test_base_parser_extracts_headers_body_and_attachments() -> None:
+def test_base_parser_extracts_headers_body_and_attachments(tmp_path: Path, monkeypatch: object) -> None:
     use_case = _base_parser()
+    monkeypatch.setattr(use_case.module, "ATTACHMENTS_BUCKET_DIR", tmp_path)  # type: ignore[attr-defined]
 
     with (ASSETS_DIR / "base.eml").open("rb") as stream:
         result = use_case.run(stream)
@@ -31,5 +32,12 @@ def test_base_parser_extracts_headers_body_and_attachments() -> None:
     assert attachment["contentType"] == "image/png"
     assert attachment["binary"] is True
     assert attachment["sizeInBytes"] > 0
-    assert attachment["id"]
     assert "payload" not in attachment
+
+    # base.eml's attachment has no content-id, so an internal id is generated
+    # and used as the storage key instead.
+    assert attachment["id"] is None
+    assert attachment["internalId"]
+    stored_files = list(tmp_path.glob(f"{attachment['internalId']}.*"))
+    assert len(stored_files) == 1
+    assert stored_files[0].read_bytes()
