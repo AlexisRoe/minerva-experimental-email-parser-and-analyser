@@ -36,6 +36,7 @@ def main() -> None:
     print("📬 Minerva Email Parser\n")
 
     use_cases = discover_use_cases(USE_CASE_DIR)
+
     if not use_cases:
         print(f"⚠️  No use-cases found in {USE_CASE_DIR}")
         sys.exit(1)
@@ -44,12 +45,15 @@ def main() -> None:
         "🧩 Which use-case do you want to run?",
         [Choice(title=uc.name, value=uc) for uc in use_cases],
     )
+
     if use_case is None:
         print("👋 Cancelled.")
         return
+
     print(f"   └─ {use_case.description}")
 
     assets = discover_assets(ASSETS_DIR)
+
     if not assets:
         print(f"⚠️  No asset files found in {ASSETS_DIR}")
         sys.exit(1)
@@ -58,6 +62,7 @@ def main() -> None:
         "📄 Which asset do you want to run it against?",
         [Choice(title=asset.name, value=asset) for asset in assets],
     )
+
     if asset_path is None:
         print("👋 Cancelled.")
         return
@@ -73,6 +78,7 @@ def main() -> None:
             Choice(title="📁 Write to file", value="file"),
         ],
     )
+
     if destination is None:
         print("👋 Cancelled.")
         return

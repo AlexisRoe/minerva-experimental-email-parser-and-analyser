@@ -48,4 +48,5 @@ def write_json_output(output_dir: Path, file_name: str, result: Any) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / file_name
     output_path.write_text(json.dumps(result, indent=2))
+
     return output_path

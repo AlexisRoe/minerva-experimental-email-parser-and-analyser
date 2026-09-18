@@ -53,6 +53,7 @@ class ExtractionService:
         """
         html_text: str | None = None
         html_links: list[dict[str, Any]] = []
+
         if html:
             body = BeautifulSoup(html, "html.parser")
             body = body.find("body") or body
@@ -69,6 +70,7 @@ class ExtractionService:
 
     def _extract_html_links(self, body: Any) -> list[dict[str, Any]]:
         links: list[dict[str, Any]] = []
+
         for tag_name, attribute in LINK_TAG_ATTRIBUTES.items():
             for tag in body.find_all(tag_name):
                 href = tag.get(attribute)
@@ -85,6 +87,7 @@ class ExtractionService:
                         "domain": urlparse(href).netloc or None,
                     }
                 )
+
         return links
 
     def _extract_plain_text_links(self, plain_text: str) -> list[dict[str, Any]]:
@@ -92,6 +95,7 @@ class ExtractionService:
         # `only_unique=True` (no `get_indices`) always returns plain strings;
         # the library's overloads just don't encode that.
         urls = cast("list[str]", self._url_extractor.find_urls(plain_text, only_unique=True))
+
         for url in urls:
             links.append(
                 {
@@ -102,12 +106,14 @@ class ExtractionService:
                     "domain": urlparse(url).netloc or None,
                 }
             )
+
         return links
 
     def _merge_links(
         self, html_links: list[dict[str, Any]], plain_links: list[dict[str, Any]]
     ) -> list[dict[str, Any]]:
         merged: dict[str, dict[str, Any]] = {}
+
         for link in [*html_links, *plain_links]:
             href = link["href"]
             existing = merged.get(href)
@@ -118,6 +124,7 @@ class ExtractionService:
                 existing["source"] = "both"
             if existing["visible"] is None and link["visible"] is not None:
                 existing["visible"] = link["visible"]
+
         return list(merged.values())
 
     def _extract_phone_numbers(self, plain_text: str | None, html_text: str | None) -> list[dict[str, Any]]:
@@ -125,6 +132,7 @@ class ExtractionService:
         html_numbers = self._find_phone_numbers(html_text) if html_text else set()
 
         results: list[dict[str, Any]] = []
+
         for value in sorted(plain_numbers | html_numbers):
             source = self._resolve_source(value in plain_numbers, value in html_numbers)
             parsed = phonenumbers.parse(value, None)
@@ -136,6 +144,7 @@ class ExtractionService:
                     "region": phonenumbers.region_code_for_number(parsed),
                 }
             )
+
         return results
 
     def _find_phone_numbers(self, text: str) -> set[str]:
@@ -145,6 +154,7 @@ class ExtractionService:
         matcher = phonenumbers.PhoneNumberMatcher(
             text, DEFAULT_PHONE_NUMBER_REGION, leniency=phonenumbers.Leniency.POSSIBLE
         )
+
         return {
             phonenumbers.format_number(match.number, phonenumbers.PhoneNumberFormat.E164) for match in matcher
         }
@@ -154,6 +164,7 @@ class ExtractionService:
         html_emails = self._find_email_addresses(html_text) if html_text else set()
 
         results: list[dict[str, Any]] = []
+
         for value in sorted(plain_emails | html_emails):
             source = self._resolve_source(value in plain_emails, value in html_emails)
             results.append(
@@ -164,6 +175,7 @@ class ExtractionService:
                     "domain": value.rsplit("@", 1)[-1],
                 }
             )
+
         return results
 
     def _find_email_addresses(self, text: str) -> set[str]:
@@ -174,9 +186,11 @@ class ExtractionService:
             validate_email(address, check_deliverability=False)
         except EmailNotValidError:
             return False
+
         return True
 
     def _resolve_source(self, found_in_plain: bool, found_in_html: bool) -> ArtefactSource:
         if found_in_plain and found_in_html:
             return "both"
+
         return "plain-text" if found_in_plain else "html"

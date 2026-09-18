@@ -55,16 +55,20 @@ def discover_use_cases(use_case_dir: Path) -> list[UseCase]:
         UseCaseError: If a `.py` file is missing required metadata or a `run` function.
     """
     use_cases: list[UseCase] = []
+
     for path in sorted(use_case_dir.glob("*.py")):
         if path.stem.startswith("_"):
             continue
+
         module = _load_module(path)
         name = getattr(module, "NAME", None)
         description = getattr(module, "DESCRIPTION", None)
         run = getattr(module, "run", None)
         if not name or not description or not callable(run):
             raise UseCaseError(f"{path} must define NAME, DESCRIPTION, and a run(stream) function")
+
         use_cases.append(UseCase(name=name, description=description, path=path, module=module))
+
     return sorted(use_cases, key=lambda uc: uc.name)
 
 
@@ -72,6 +76,8 @@ def _load_module(path: Path) -> ModuleType:
     spec = importlib.util.spec_from_file_location(path.stem, path)
     if spec is None or spec.loader is None:
         raise UseCaseError(f"Could not load use-case module: {path}")
+
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+
     return module

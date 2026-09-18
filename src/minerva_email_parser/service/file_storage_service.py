@@ -44,6 +44,7 @@ class LocalFileStorage:
         self._bucket_dir.mkdir(parents=True, exist_ok=True)
         object_path = self._bucket_dir / key
         object_path.write_bytes(body)
+
         return PutObjectResult(key=key, bucket=str(self._bucket_dir), location=str(object_path))
 
     def get_object(self, key: str) -> bytes:

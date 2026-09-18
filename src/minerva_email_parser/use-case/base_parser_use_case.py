@@ -66,6 +66,7 @@ def _extract_attachment(attachment: dict[str, Any], storage: LocalFileStorage) -
     attachment_id: str | None = attachment.get("content-id") or None
     internal_id: str | None = None
     storage_id: str
+
     if attachment_id:
         storage_id = attachment_id
     else:
@@ -86,8 +87,10 @@ def _extract_attachment(attachment: dict[str, Any], storage: LocalFileStorage) -
         "id": attachment_id,
         "binary": is_binary,
     }
+
     if internal_id is not None:
         result["internalId"] = internal_id
+
     return result
 
 
@@ -106,6 +109,7 @@ def _extract_defects(mail: mailparser.MailParser) -> list[dict[str, str]]:
         alongside the defect's class name and description.
     """
     defects: list[dict[str, str]] = []
+
     for part_defects in mail.defects:
         for part_content_type, messages in part_defects.items():
             for message in messages:
@@ -117,12 +121,15 @@ def _extract_defects(mail: mailparser.MailParser) -> list[dict[str, str]]:
                         "description": description,
                     }
                 )
+
     return defects
 
 
 def _attachment_size(payload: str | None, is_binary: bool) -> int:
     if payload is None:
         return 0
+
     if is_binary:
         return len(b64decode(payload))
+
     return len(payload.encode("utf-8"))
