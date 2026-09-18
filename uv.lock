@@ -21,10 +21,20 @@ wheels = [
 ]
 
 [[package]]
+name = "mail-parser"
+version = "4.6.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/99/29/e8679edafd8dcb21b5dced06ab6ab3c0c8b2075766a403338c9c1130a0b5/mail_parser-4.6.5.tar.gz", hash = "sha256:184100c23e136bd167b490791d4089f6294893cda5d5a88c5dd4999f559a4123", size = 2909009, upload-time = "2026-09-10T21:51:34.237Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ca/a2/22afaa06dda1970ec5516600c172cc0fddd33986459876c5ff8f4b8fe068/mail_parser-4.6.5-py3-none-any.whl", hash = "sha256:99ae29fb038d77a5e89a74366791ac3dbf2042244044c0390be403b6ede06765", size = 50076, upload-time = "2026-09-10T21:51:32.88Z" },
+]
+
+[[package]]
 name = "minerva-email-parser"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "mail-parser" },
     { name = "questionary" },
 ]
 
@@ -35,7 +45,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "questionary", specifier = ">=2.1.1" }]
+requires-dist = [
+    { name = "mail-parser", specifier = ">=4.6.5" },
+    { name = "questionary", specifier = ">=2.1.1" },
+]
 
 [package.metadata.requires-dev]
 dev = [

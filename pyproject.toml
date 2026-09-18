@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "mail-parser>=4.6.5",
     # Add runtime deps with `uv add <pkg>`
     "questionary>=2.1.1",
 ]

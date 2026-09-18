@@ -4,7 +4,7 @@ import importlib.util
 from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
-from typing import BinaryIO, Protocol
+from typing import Any, BinaryIO, Protocol
 
 
 class UseCaseError(Exception):
@@ -15,7 +15,7 @@ class UseCaseModule(Protocol):
     NAME: str
     DESCRIPTION: str
 
-    def run(self, stream: BinaryIO) -> None: ...
+    def run(self, stream: BinaryIO) -> Any: ...
 
 
 @dataclass(frozen=True)
@@ -27,13 +27,16 @@ class UseCase:
     path: Path
     module: ModuleType
 
-    def run(self, stream: BinaryIO) -> None:
+    def run(self, stream: BinaryIO) -> Any:
         """Execute the use-case against a byte stream.
 
         Args:
             stream: A binary stream of the loaded email file's contents.
+
+        Returns:
+            A JSON-serializable result produced by the use-case.
         """
-        self.module.run(stream)
+        return self.module.run(stream)
 
 
 def discover_use_cases(use_case_dir: Path) -> list[UseCase]:
