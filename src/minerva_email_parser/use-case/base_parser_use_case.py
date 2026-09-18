@@ -7,7 +7,8 @@ from typing import Any, BinaryIO
 
 import mailparser
 
-from minerva_email_parser.service.file_storage import (
+from minerva_email_parser.service.extraction_service import ExtractionService
+from minerva_email_parser.service.file_storage_service import (
     DEFAULT_CONTENT_TYPE,
     LocalFileStorage,
     build_object_key,
@@ -28,16 +29,20 @@ def run(stream: BinaryIO) -> dict[str, Any]:
         stream: A binary stream of the loaded `.eml` file's contents.
 
     Returns:
-        A dict with `headers`, `body`, `attachments`, and `defects` keys.
+        A dict with `headers`, `body`, `attachments`, `defects`, and
+        `artefacts` keys.
     """
     mail = mailparser.parse_from_bytes(stream.read())
     storage = LocalFileStorage(ATTACHMENTS_BUCKET_DIR)
+    extraction_service = ExtractionService()
+    body = _extract_body(mail)
 
     return {
         "headers": _extract_headers(mail),
-        "body": _extract_body(mail),
+        "body": body,
         "attachments": [_extract_attachment(attachment, storage) for attachment in mail.attachments],
         "defects": _extract_defects(mail),
+        "artefacts": extraction_service.extract_artefacts(body["plainText"], body["html"]),
     }
 
 

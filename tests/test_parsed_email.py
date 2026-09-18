@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from minerva_email_parser.models.parsed_email import ParsedEmail
+from minerva_email_parser.models.parsed_email_model import ParsedEmail
 from minerva_email_parser.use_case_loader import discover_use_cases
 
 USE_CASE_DIR = Path(__file__).resolve().parent.parent / "src" / "minerva_email_parser" / "use-case"

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from minerva_email_parser.service.file_storage import LocalFileStorage, build_object_key
+from minerva_email_parser.service.file_storage_service import LocalFileStorage, build_object_key
 
 
 def test_build_object_key_uses_extension_from_known_content_type() -> None:
