@@ -28,7 +28,7 @@ def run(stream: BinaryIO) -> dict[str, Any]:
         stream: A binary stream of the loaded `.eml` file's contents.
 
     Returns:
-        A dict with `headers`, `body`, and `attachments` keys.
+        A dict with `headers`, `body`, `attachments`, and `defects` keys.
     """
     mail = mailparser.parse_from_bytes(stream.read())
     storage = LocalFileStorage(ATTACHMENTS_BUCKET_DIR)
@@ -37,6 +37,7 @@ def run(stream: BinaryIO) -> dict[str, Any]:
         "headers": _extract_headers(mail),
         "body": _extract_body(mail),
         "attachments": [_extract_attachment(attachment, storage) for attachment in mail.attachments],
+        "defects": _extract_defects(mail),
     }
 
 
@@ -59,12 +60,16 @@ def _extract_attachment(attachment: dict[str, Any], storage: LocalFileStorage) -
 
     attachment_id: str | None = attachment.get("content-id") or None
     internal_id: str | None = None
-    if not attachment_id:
+    storage_id: str
+    if attachment_id:
+        storage_id = attachment_id
+    else:
         internal_id = str(uuid.uuid4())
+        storage_id = internal_id
 
     if payload is not None:
         content = b64decode(payload) if is_binary else payload.encode(attachment.get("charset") or "utf-8")
-        key = build_object_key(attachment_id or internal_id, content_type or DEFAULT_CONTENT_TYPE)
+        key = build_object_key(storage_id, content_type or DEFAULT_CONTENT_TYPE)
         storage.put_object(key, content, content_type=content_type)
 
     result: dict[str, Any] = {
@@ -79,6 +84,35 @@ def _extract_attachment(attachment: dict[str, Any], storage: LocalFileStorage) -
     if internal_id is not None:
         result["internalId"] = internal_id
     return result
+
+
+def _extract_defects(mail: mailparser.MailParser) -> list[dict[str, str]]:
+    """Flatten mailparser's per-part defects into a single list.
+
+    `mail.defects` is a list of `{part_content_type: [message, ...]}` dicts,
+    one per malformed part. Each message is already formatted by mailparser
+    as `"<DefectClassName>: <description>"`.
+
+    Args:
+        mail: The parsed message.
+
+    Returns:
+        One entry per defect, each naming the malformed part's content type
+        alongside the defect's class name and description.
+    """
+    defects: list[dict[str, str]] = []
+    for part_defects in mail.defects:
+        for part_content_type, messages in part_defects.items():
+            for message in messages:
+                defect_type, _, description = message.partition(": ")
+                defects.append(
+                    {
+                        "partContentType": part_content_type,
+                        "type": defect_type,
+                        "description": description,
+                    }
+                )
+    return defects
 
 
 def _attachment_size(payload: str | None, is_binary: bool) -> int:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from io import BytesIO
 from pathlib import Path
 
 from minerva_email_parser.use_case_loader import discover_use_cases
@@ -41,3 +42,30 @@ def test_base_parser_extracts_headers_body_and_attachments(tmp_path: Path, monke
     stored_files = list(tmp_path.glob(f"{attachment['internalId']}.*"))
     assert len(stored_files) == 1
     assert stored_files[0].read_bytes()
+
+    assert result["defects"] == []
+
+
+def test_base_parser_reports_defects_for_malformed_mime_parts(tmp_path: Path, monkeypatch: object) -> None:
+    use_case = _base_parser()
+    monkeypatch.setattr(use_case.module, "ATTACHMENTS_BUCKET_DIR", tmp_path)  # type: ignore[attr-defined]
+
+    malformed = (
+        b"From: a@example.com\r\n"
+        b"To: b@example.com\r\n"
+        b"Subject: broken\r\n"
+        b'Content-Type: multipart/mixed; boundary="AAA"\r\n'
+        b"\r\n"
+        b"--AAA\r\n"
+        b"Content-Type: text/plain\r\n"
+        b"\r\n"
+        b"hello\r\n"
+    )
+
+    result = use_case.run(BytesIO(malformed))
+
+    assert len(result["defects"]) == 1
+    defect = result["defects"][0]
+    assert defect["partContentType"] == "multipart/mixed"
+    assert defect["type"] == "CloseBoundaryNotFoundDefect"
+    assert defect["description"]
