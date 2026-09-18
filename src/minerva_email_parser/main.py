@@ -42,11 +42,12 @@ def main() -> None:
 
     use_case: UseCase | None = _select(
         "🧩 Which use-case do you want to run?",
-        [Choice(title=f"{uc.name} — {uc.description}", value=uc) for uc in use_cases],
+        [Choice(title=uc.name, value=uc) for uc in use_cases],
     )
     if use_case is None:
         print("👋 Cancelled.")
         return
+    print(f"   └─ {use_case.description}")
 
     assets = discover_assets(ASSETS_DIR)
     if not assets:
