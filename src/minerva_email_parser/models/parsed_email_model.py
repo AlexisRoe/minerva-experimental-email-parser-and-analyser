@@ -5,6 +5,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 ArtefactSource = Literal["plain-text", "html", "both"]
+IpArtefactSource = Literal["header", "plain-text", "html"]
 
 
 class Header(BaseModel):
@@ -121,17 +122,37 @@ class LinkArtefact(BaseModel):
     )
 
 
-class Artefacts(BaseModel):
-    """Links, phone numbers, and email addresses extracted from the email body.
+class IpAddressArtefact(BaseModel):
+    """An IPv4/IPv6 address found in the email's headers or body."""
 
-    Extraction only considers the plain-text body and the `<body>` of the
-    HTML (falling back to the whole document for HTML fragments without a
-    `<body>` tag) — not the raw headers or attachment content.
+    source: list[IpArtefactSource] = Field(
+        description="Every location the same IP/port/CIDR combination was found in: the raw "
+        "headers, the plain-text body, and/or the HTML body."
+    )
+    ip: str = Field(description="The address, normalized by the `ipaddress` module.")
+    version: Literal["IPv4", "IPv6"] = Field(description="IP version.")
+    port: int | None = Field(description="Port number, if one was attached to the literal (e.g. ':8080').")
+    cidr: str | None = Field(
+        description="CIDR prefix length (e.g. '/24'), if the literal was in subnet notation."
+    )
+    raw: str = Field(description="The exact matched token as it appeared in the source text.")
+
+
+class Artefacts(BaseModel):
+    """Links, phone numbers, email addresses, and IPs extracted from the email.
+
+    Links, phone numbers, and email addresses only consider the plain-text
+    body and the `<body>` of the HTML (falling back to the whole document
+    for HTML fragments without a `<body>` tag). IP addresses also consider
+    the raw headers. Attachment content is never considered.
     """
 
     links: list[LinkArtefact] = Field(description="URLs and resource references found in the body.")
     phoneNumbers: list[PhoneNumberArtefact] = Field(description="Phone numbers found in the body.")
     emailAddresses: list[EmailAddressArtefact] = Field(description="Email addresses found in the body.")
+    ipAddresses: list[IpAddressArtefact] = Field(
+        description="IP addresses found in the headers or body, e.g. from Received chains."
+    )
 
 
 class ParsedEmail(BaseModel):

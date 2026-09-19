@@ -36,13 +36,14 @@ def run(stream: BinaryIO) -> dict[str, Any]:
     storage = LocalFileStorage(ATTACHMENTS_BUCKET_DIR)
     extraction_service = ExtractionService()
     body = _extract_body(mail)
+    headers = _extract_headers(mail)
 
     return {
-        "headers": _extract_headers(mail),
+        "headers": headers,
         "body": body,
         "attachments": [_extract_attachment(attachment, storage) for attachment in mail.attachments],
         "defects": _extract_defects(mail),
-        "artefacts": extraction_service.extract_artefacts(body["plainText"], body["html"]),
+        "artefacts": extraction_service.extract_artefacts(headers, body["plainText"], body["html"]),
     }
 
 
