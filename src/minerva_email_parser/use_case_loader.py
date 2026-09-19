@@ -56,7 +56,9 @@ def discover_use_cases(use_case_dir: Path) -> list[UseCase]:
     """
     use_cases: list[UseCase] = []
 
-    for path in sorted(use_case_dir.glob("*.py")):
+    # Sorted once at the end (by `name`, which may differ from the file
+    # name) — no need to also sort the glob results here.
+    for path in use_case_dir.glob("*.py"):
         if path.stem.startswith("_"):
             continue
 

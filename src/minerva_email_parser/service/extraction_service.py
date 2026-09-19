@@ -88,22 +88,25 @@ class ExtractionService:
     def _extract_html_links(self, body: Any) -> list[dict[str, Any]]:
         links: list[dict[str, Any]] = []
 
-        for tag_name, attribute in LINK_TAG_ATTRIBUTES.items():
-            for tag in body.find_all(tag_name):
-                href = tag.get(attribute)
-                if not href:
-                    continue
-                href = href.strip()
-                visible = tag.get_text(strip=True) or None if tag.name == "a" else None
-                links.append(
-                    {
-                        "source": "html",
-                        "type": "src" if attribute == "src" else (urlparse(href).scheme or "relative"),
-                        "visible": visible,
-                        "href": href,
-                        "domain": urlparse(href).netloc or None,
-                    }
-                )
+        # A single traversal over every relevant tag, rather than one
+        # `find_all` (and full tree walk) per tag name.
+        for tag in body.find_all(list(LINK_TAG_ATTRIBUTES)):
+            attribute = LINK_TAG_ATTRIBUTES[tag.name]
+            href = tag.get(attribute)
+            if not href:
+                continue
+
+            href = href.strip()
+            visible = tag.get_text(strip=True) or None if tag.name == "a" else None
+            links.append(
+                {
+                    "source": "html",
+                    "type": "src" if attribute == "src" else (urlparse(href).scheme or "relative"),
+                    "visible": visible,
+                    "href": href,
+                    "domain": urlparse(href).netloc or None,
+                }
+            )
 
         return links
 
