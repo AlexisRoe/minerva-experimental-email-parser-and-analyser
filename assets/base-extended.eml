@@ -1,0 +1,130 @@
+Delivered-To: john.smith@example.com
+Received: by 2002:a05:6a10:2b0c:b0:485:a127:ef92 with SMTP id a12csp6800851wrn;
+    Fri, 18 Sep 2026 14:30:03 -0400 (EDT)
+X-Received: by 2002:a5d:5f43:0:b0:486:fc08:a3ea with SMTP id ffacd0b85a97d-4871e3721d9mr3940810f8f.54.1789748145204;
+    Fri, 18 Sep 2026 14:30:03 -0400 (EDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789748145; cv=none; d=google.com; s=arc-20260327;
+    b=nUZXPQrAlaxpJCdX9DuS6BE8gNA5ijwQ1jOVzTJ23MfjewPjs7mqSGGp9pFOIl2NhJKAOT37DUmF
+    dxaeKkIzzFLMasKmuaOZdwxLy14WWTLGh7XJTQyAjhoFU4RKlta0Sfd0/qm58w0W93FAzWeKzqEP
+    NLGeQ3Y22NRU4+GCoFwo4MQfacSMqh7SVOlWj3KOGGr3LZGMvdN1cPYDcg5lx8hT2PS7M7qZ9iOW
+    LDWNIILeszT8eFy2XATGp0KhJjwYNvvZTm0+SR7IsVDaW6kcM3me0h38V3Wi43MUhcvhTGxDrMwR
+    OEpf5D689AYJGL/fUWxnziL3g/mZEsxwq4u9uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+    h=reply-to:message-id:mime-version:list-unsubscribe-post:list-unsubscribe
+    :list-id:from:feedback-id:date:subject:to:dkim-signature;
+    bh=Njq+Np7zIFT2RNoNSwV3Km4WnhjB0zWZ96LzCGapa5Q=;
+    fh=nBRHqh2lAQpuwqmRdMVxuN4cshDuTmhPCUsqG2Bely0=;
+    b=eRGFs5MUJV2F6n0uvODyggT2IzLFLtIwFIZz0SYv4Sa4JxsamGwGRYObEuU40sGlMt5lVgJ4ta
+    aNqE2Yjv5ggMr0vfx2T7KiuJ43M2t3pG5O1JflVUfePE2DmequOdCoeoXrqMXQZpHyPs4EuKvxOC
+    b4Q1SaZl1mkqE3apmfQF1I8rNg5/V3xim6uUV8KETrwGCl1SPUDFEmb1/3OlfIJSAHQw6ye8Bi3i
+    IRJBrrrdbyt7faAPCZlLcudlG64V2EwGw1CljSSZ0IgP+6ocKSHYF0Ek7chpEXyxwqOGfUuF5jOO
+    jt/n9ZPanMas68tcZLJeebuB2iDyzy0NYA/AWYcQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+    dkim=pass header.i=@example.com header.s=s202609 header.b=uSKvgIWe;
+    spf=pass (google.com: domain of bounces-1234-john=example.com@outbound.example.com designates 198.51.100.25 as permitted sender) smtp.mailfrom="bounces-1234-john=example.com@outbound.example.com";
+    dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+Return-Path: <bounces-1234-john=example.com@outbound.example.com>
+Received: from outbound.example.com (outbound.example.com. [198.51.100.25])
+    by mx.google.com with ESMTPS id ffacd0b85a97d-48720123923si3334704f8f.494.2026.09.18.14.30.02
+    for <john.smith@example.com>
+    (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+    Fri, 18 Sep 2026 14:30:02 -0400 (EDT)
+Received-SPF: pass (google.com: domain of bounces-1234-john=example.com@outbound.example.com designates 198.51.100.25 as permitted sender) client-ip=198.51.100.25;
+Authentication-Results: mx.google.com;
+    dkim=pass header.i=@example.com header.s=s202609 header.b=uSKvgIWe;
+    spf=pass (google.com: domain of bounces-1234-john=example.com@outbound.example.com designates 198.51.100.25 as permitted sender) smtp.mailfrom="bounces-1234-john=example.com@outbound.example.com";
+    dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.com;
+    q=dns/txt; s=s202609; t=1789748142;
+    h=to:from:reply-to:subject:date:mime-version:content-type:list-id:list-unsubscribe:list-unsubscribe-post:message-id:feedback-id;
+    bh=Njq+Np7zIFT2RNoNSwV3Km4WnhjB0zWZ96LzCGapa5Q=;
+    b=uSKvgIWe1Usp5IPAoQlKWMGc3nhUyaxv/LZGsdEJVBNNnswQAzOi7pMBXznIrXPVYmK0ESjm
+    QOZtrIs7jAklZFu6lTHTG2OgRbbHVjfWjnCzmLE1EQxcxUN9+kqaTk4VuGxeKRtaVhhnhkJNArc
+    n9BjFGVo6midU132zmEjtKlw0sZHIfguegez1mwK8+kDVabdjPIrfM+hJBET4rjZcv55y6d1uho
+    1yB7EM99FPQCJ/sfaOBsgFJYSN/cFpevD6T1dT8zCXQ+YmGR0T6bSUvXetPkofWg2UOd7zqd0dX
+    zheTIAhdAFgaxEViwxrQNE0V4w7G2XfzRWqp9HDaikm2w==
+To: John Smith <john.smith@example.com>
+From: Jane Doe <jane.doe@example.com>
+Reply-To: Jane Doe <jane.doe@example.com>
+Subject: Project Update & Q3 Summary
+Date: Fri, 18 Sep 2026 14:30:00 -0400
+Message-ID: <20260918143000.12345.q3update@outbound.example.com>
+Feedback-ID: 198.51.100.25:q3-campaign:example_corp
+List-Id: <updates.example.com>
+List-Unsubscribe: <mailto:unsubscribe@outbound.example.com?subject=unsub-99281>, <https://example.com/unsubscribe?id=99281>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+X-Mailer: ExampleCorp Engine 2.0
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_Mixed_001_12345678"
+
+------=_Part_Mixed_001_12345678
+Content-Type: multipart/alternative; boundary="----=_Part_Alt_002_87654321"
+
+------=_Part_Alt_002_87654321
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hi John,
+
+Here is the update for the Q3 project review.
+
+You can check the full report online: https://example.com/reports/q3
+If you have any urgent questions, feel free to contact our lead at support@example.com or call us directly at +1 (555) 019-2834.
+
+Best regards,
+Jane Doe
+
+------=_Part_Alt_002_87654321
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.5; color: #333333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .footer { margin-top: 20px; font-size: 12px; color: #777777; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Project Update &amp; Q3 Summary</h2>
+    <p>Hi John,</p>
+    <p>Here is the update for the Q3 project review.</p>
+    
+    <p>
+      <img src="https://via.placeholder.com/300x100.png?text=Q3+Progress" alt="Q3 Progress Chart" width="300" height="100">
+    </p>
+
+    <p>
+      You can review the full status on our 
+      <a href="https://example.com/reports/q3">Project Dashboard</a>.
+    </p>
+
+    <p>
+      If you have any urgent questions, please reach out:
+    </p>
+    <ul>
+      <li>Email: <a href="mailto:support@example.com">support@example.com</a></li>
+      <li>Phone: <a href="tel:+15550192834">+1 (555) 019-2834</a></li>
+    </ul>
+
+    <div class="footer">
+      <p>Best regards,<br><strong>Jane Doe</strong></p>
+    </div>
+  </div>
+</body>
+</html>
+
+------=_Part_Alt_002_87654321--
+
+------=_Part_Mixed_001_12345678
+Content-Type: image/png; name="icon.png"
+Content-Disposition: attachment; filename="icon.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9
+awAAAABJRU5ErkJggg==
+
+------=_Part_Mixed_001_12345678--

@@ -1,0 +1,79 @@
+From: Jane Doe <jane.doe@example.com>
+To: John Smith <john.smith@example.com>
+Subject: Project Update & Q3 Summary
+Date: Fri, 18 Sep 2026 14:30:00 -0400
+Message-ID: <20260918143000.12345.q3update@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_Mixed_001_12345678"
+
+------=_Part_Mixed_001_12345678
+Content-Type: multipart/alternative; boundary="----=_Part_Alt_002_87654321"
+
+------=_Part_Alt_002_87654321
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hi John,
+
+Here is the update for the Q3 project review.
+
+You can check the full report online: https://example.com/reports/q3
+If you have any urgent questions, feel free to contact our lead at support@example.com or call us directly at +1 (555) 019-2834.
+
+Best regards,
+Jane Doe
+
+------=_Part_Alt_002_87654321
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.5; color: #333333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .footer { margin-top: 20px; font-size: 12px; color: #777777; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Project Update &amp; Q3 Summary</h2>
+    <p>Hi John,</p>
+    <p>Here is the update for the Q3 project review.</p>
+    
+    <p>
+      <img src="https://via.placeholder.com/300x100.png?text=Q3+Progress" alt="Q3 Progress Chart" width="300" height="100">
+    </p>
+
+    <p>
+      You can review the full status on our 
+      <a href="https://example.com/reports/q3">Project Dashboard</a>.
+    </p>
+
+    <p>
+      If you have any urgent questions, please reach out:
+    </p>
+    <ul>
+      <li>Email: <a href="mailto:support@example.com">support@example.com</a></li>
+      <li>Phone: <a href="tel:+15550192834">+1 (555) 019-2834</a></li>
+    </ul>
+
+    <div class="footer">
+      <p>Best regards,<br><strong>Jane Doe</strong></p>
+    </div>
+  </div>
+</body>
+</html>
+
+------=_Part_Alt_002_87654321--
+
+------=_Part_Mixed_001_12345678
+Content-Type: image/png; name="icon.png"
+Content-Disposition: attachment; filename="icon.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9
+awAAAABJRU5ErkJggg==
+
+------=_Part_Mixed_001_12345678--
